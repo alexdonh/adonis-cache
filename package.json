@@ -36,7 +36,8 @@
     "fs-extra": "^8.1.0",
     "microtime": "^3.0.0",
     "moment": "^2.24.0",
-    "proper-lockfile": "^4.1.1"
+    "proper-lockfile": "^4.1.1",
+    "safe-eval": "^0.4.1"
   },
   "devDependencies": {
     "@adonisjs/ace": "^5.0.8",
