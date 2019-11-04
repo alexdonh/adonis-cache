@@ -1,0 +1,35 @@
+'use strict'
+
+const { RuntimeException } = require('@adonisjs/generic-exceptions')
+
+/** @type {import('@adonisjs/lucid/src/Schema')} */
+const Schema = use('Schema')
+const Config = use('Config') // TODO??
+
+class CacheSchema extends Schema {
+  static get connection () {
+    return Config.get('cache.db.connection', '')
+  }
+
+  up () {
+    const cacheTable = Config.get('cache.db.cacheTable', '')
+    if (!cacheTable) {
+      throw RuntimeException.missingConfig('cache.db.cacheTable', 'config/cache.js')
+    }
+    this.create(cacheTable, (table) => {
+      table.string('id', 255).collate('latin1_general_ci').unique().primary()
+      table.timestamp('expiredAt')
+      table.binary('data')
+    })
+  }
+
+  down () {
+    const cacheTable = Config.get('cache.db.cacheTable', '')
+    if (!cacheTable) {
+      throw RuntimeException.missingConfig('cache.db.cacheTable', 'config/cache.js')
+    }
+    this.drop(cacheTable)
+  }
+}
+
+module.exports = CacheSchema

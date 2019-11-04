@@ -1,0 +1,153 @@
+'use strict'
+
+/** @type {import('@adonisjs/framework/src/Env')} */
+const Env = use('Env')
+
+module.exports = {
+
+  /*
+  |--------------------------------------------------------------------------
+  | The default connection
+  |--------------------------------------------------------------------------
+  |
+  | The main default connection you want to use for caching.
+  |
+  */
+
+  default: 'dummy',
+
+  /*
+  |--------------------------------------------------------------------------
+  | Configuration for database caching
+  |--------------------------------------------------------------------------
+  */
+  
+  db: {
+
+    /*
+    |--------------------------------------------------------------------------
+    | Database connection. See https://github.com/adonisjs/adonis-lucid/
+    |--------------------------------------------------------------------------
+    */
+
+    connection: Env.get('DB_CONNECTION', 'sqlite'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Cache table name
+    |--------------------------------------------------------------------------
+    */
+
+    cacheTable: 'cache',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Garbage collection probability
+    |--------------------------------------------------------------------------
+    |
+    | The probability (parts per million) that garbage collection (GC)
+    | should be performed when storing a piece of data in the cache.
+    |
+    */
+
+    gcProbability: 100
+  },
+
+  /*
+  |--------------------------------------------------------------------------
+  | Configuration for database caching
+  |--------------------------------------------------------------------------
+  */
+  
+  file: {
+
+    /*
+    |--------------------------------------------------------------------------
+    | Cache file suffix
+    |--------------------------------------------------------------------------
+    */
+
+    cacheFileSuffix: '.bin',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Directory tree level
+    |--------------------------------------------------------------------------
+    |
+    | The level of sub-directories to store cache files.
+    |
+    */
+
+    directoryLevel: 1,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Garbage collection probability
+    |--------------------------------------------------------------------------
+    |
+    | The probability (parts per million) that garbage collection (GC)
+    | should be performed when storing a piece of data in the cache.
+    |
+    */
+
+    gcProbability: 10,
+
+    /*
+    |--------------------------------------------------------------------------
+    | File permission
+    |--------------------------------------------------------------------------
+    |
+    | The permission to be set for newly created cache files.
+    */
+
+    fileMode: 0o644,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Directory permission
+    |--------------------------------------------------------------------------
+    |
+    | The permission to be set for newly created cache directories.
+    */
+
+    dirMode: 0o755
+  },
+
+  /*
+  |--------------------------------------------------------------------------
+  | Configuration for local array-like caching
+  |--------------------------------------------------------------------------
+  */
+  
+  object: {
+
+  },
+
+  /*
+  |--------------------------------------------------------------------------
+  | Configuration for redis caching
+  |--------------------------------------------------------------------------
+  */
+  
+  redis: {
+
+    /*
+    |--------------------------------------------------------------------------
+    | Redis connection. See https://github.com/adonisjs/adonis-redis/
+    |--------------------------------------------------------------------------
+    */
+
+    connection: Env.get('REDIS_CONNECTION', 'local'),
+  },
+
+  /*
+  |--------------------------------------------------------------------------
+  | Configuration for dummy caching
+  |--------------------------------------------------------------------------
+  |
+  | DummyCache does not cache anything, at all. It is provided mainly
+  | for testing purposes and easily switch between cache and non-cache.
+  */
+  
+  dummy: {}
+}
