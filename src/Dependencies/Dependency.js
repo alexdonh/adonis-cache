@@ -18,26 +18,26 @@ class Dependency {
 
   async evaluateDependency (cache) {
     if (this.reusable) {
-      const hash = await this.generateReusableHash()
+      const hash = await this._generateReusableHash()
       if (!_.has(Dependency._reusableData, hash)) {
-        Dependency._reusableData[hash] = await this.generateDependencyData(cache)
+        Dependency._reusableData[hash] = await this._generateDependencyData(cache)
       }
       this.data = Dependency._reusableData[hash]
     } else {
-      this.data = await this.generateDependencyData(cache)
+      this.data = await this._generateDependencyData(cache)
     }
   }
 
   async isChanged (cache) {
     let data
     if (this.reusable) {
-      const hash = await this.generateReusableHash()
+      const hash = await this._generateReusableHash()
       if (!_.has(Dependency._reusableData, hash)) {
-        Dependency._reusableData[hash] = await this.generateDependencyData(cache)
+        Dependency._reusableData[hash] = await this._generateDependencyData(cache)
       }
       data = Dependency._reusableData[hash]
     } else {
-      data = await this.generateDependencyData(cache)
+      data = await this._generateDependencyData(cache)
     }
     return data !== this.data
   }
@@ -46,7 +46,7 @@ class Dependency {
     Dependency._reusableData = {}
   }
 
-  async generateReusableHash () {
+  async _generateReusableHash () {
     const data = this.data
     this.data = null
     const key = sha1(JSON.stringify(this))
@@ -54,7 +54,7 @@ class Dependency {
     return key
   }
 
-  async generateDependencyData (cache) {
+  async _generateDependencyData (cache) {
     throw RuntimeException.invoke('Not implemented')
   }
 
