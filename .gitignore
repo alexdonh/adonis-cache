@@ -6,3 +6,4 @@ npm-debug.log
 out
 .nyc_output
 package-lock.json
+adonis-cache*.tgz
