@@ -26,17 +26,21 @@ class RedisCache extends Cache {
     return this._exists(key)
   }
 
+  async close () {
+    return this.Redis.quit(this.connection)
+  }
+
   async _exists (key) {
     return this.Redis.exists(key)
   }
 
   async _getValue (key) {
-    return this.Redis.get([key])
+    return this.Redis.get(key)
   }
 
   async _getValues (keys) {
     return this.Redis.mget(keys).then(result => {
-      return _.zipObject(keys, result)
+      return _.zipObject(keys, _.map(result, item => item || false))
     })
   }
 

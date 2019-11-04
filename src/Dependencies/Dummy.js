@@ -3,7 +3,7 @@
 const Dependency = require('./Dependency')
 
 class DummyDependency extends Dependency {
-  async generateDependencyData () {
+  async generateDependencyData (cache) {
     return false
   }
 

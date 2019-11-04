@@ -5,12 +5,14 @@ const { ServiceProvider } = require('@adonisjs/fold')
 class CacheProvider extends ServiceProvider {
   register () {
     const namespace = 'Adonis/Addons/Cache'
+    const builtInDependencies = ['Chained', 'Db', 'Dummy', 'Expression', 'File', 'Tag']
 
-    this.app.bind(`${namespace}/Dependencies/ChainedDependency`, () => {
-      const Auth = require('../src/Dependencies/Chained')
-      return Auth
-    })
-    this.app.alias(`${namespace}/Dependencies/ChainedDependency`, 'Cache/Dependencies/ChainedDependency')
+    for (const dep of builtInDependencies) {
+      this.app.bind(`${namespace}/${dep}Dependency`, () => {
+        return require(`../src/Dependencies/${dep}`)
+      })
+      this.app.alias(`${namespace}/${dep}Dependency`, `Cache/${dep}Dependency`)
+    }
 
     this.app.singleton(`${namespace}`, app => {
       const Cache = require('../src/Cache')

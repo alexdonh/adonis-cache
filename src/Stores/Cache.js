@@ -3,7 +3,7 @@
 const _ = require('lodash')
 const Promise = require('bluebird')
 const { InvalidArgumentException, RuntimeException } = require('@adonisjs/generic-exceptions')
-// const Dependency = require('../Dependencies/Dependency')
+const Dependency = require('../Dependencies/Dependency')
 const StringHelper = require('../Helpers/String')
 
 class Cache {
@@ -54,7 +54,8 @@ class Cache {
     }
     value = this.serializer[1].call(null, value)
     if (_.isArray(value) && value.length === 2) {
-      const [data, dependency] = value
+      const [data, dep] = value
+      const dependency = Dependency.fromJSON(dep)
       if (!(dependency && dependency.isChanged && await dependency.isChanged(this))) {
         return data
       }
@@ -63,21 +64,33 @@ class Cache {
   }
 
   async multiGet (keys) {
-    keys = _.map(keys, key => this.buildKey(key))
-    const values = await this._getValues(keys)
-    return _.mapValues(values, async value => {
+    const keyMap = _.reduce(keys, (keyMap, key) => {
+      keys[key] = this.buildKey(key)
+      return keys
+    }, {})
+    const values = await this._getValues(_.values(keyMap))
+    const result = {}
+    for (const key of keys) {
+      if (!_.has(values, keyMap[key])) {
+        result[key] = false
+        continue
+      }
+      let value = values[keyMap[key]]
       if (value === false || this.serializer === false) {
-        return value
+        result[key] = value
+        continue
       }
       value = this.serializer[1].call(null, value)
       if (_.isArray(value) && value.length === 2) {
-        const [data, dependency] = value
+        const [data, dep] = value
+        const dependency = Dependency.fromJSON(dep)
         if (!(dependency && dependency.isChanged && await dependency.isChanged(this))) {
-          return data
+          result[key] = data
+          continue
         }
       }
-      return false
-    })
+    }
+    return result
   }
 
   async set (key, value, duration = undefined, dependency = undefined) {
@@ -85,10 +98,10 @@ class Cache {
       duration = this.defaultDuration
     }
     if (dependency && this.serializer !== false) {
-      dependency.evaluateDependency(this)
+      await dependency.evaluateDependency(this)
     }
     if (this.serializer !== false) {
-      value = this.serializer[0].call(null, [value, dependency && dependency.toJSON ? dependency.toJSON() : false])
+      value = this.serializer[0].call(null, [value, dependency ? JSON.stringify(dependency) : false])
     }
     key = this.buildKey(key)
     return this._setValue(key, value, duration)
@@ -99,11 +112,11 @@ class Cache {
       duration = this.defaultDuration
     }
     if (dependency && this.serializer !== false) {
-      dependency.evaluateDependency(this)
+      await dependency.evaluateDependency(this)
     }
     const values = _.reduce(items, (result, value, key) => {
       if (this.serializer !== false) {
-        value = this.serializer[0].call(null, [value, dependency && dependency.toJSON ? dependency.toJSON() : false])
+        value = this.serializer[0].call(null, [value, dependency ? JSON.stringify(dependency) : false])
       }
       key = this.buildKey(key)
       result[key] = value
@@ -117,10 +130,10 @@ class Cache {
       duration = this.defaultDuration
     }
     if (dependency && this.serializer !== false) {
-      dependency.evaluateDependency(this)
+      await dependency.evaluateDependency(this)
     }
     if (this.serializer !== false) {
-      value = this.serializer[0].call(null, [value, dependency && dependency.toJSON ? dependency.toJSON() : false])
+      value = this.serializer[0].call(null, [value, dependency ? JSON.stringify(dependency) : false])
     }
     key = this.buildKey(key)
     return this._addValue(key, value, duration)
@@ -131,11 +144,11 @@ class Cache {
       duration = this.defaultDuration
     }
     if (dependency && this.serializer !== false) {
-      dependency.evaluateDependency(this)
+      await dependency.evaluateDependency(this)
     }
     const values = _.reduce(items, (result, value, key) => {
       if (this.serializer !== false) {
-        value = this.serializer[0].call(null, [value, dependency && dependency.toJSON ? dependency.toJSON() : false])
+        value = this.serializer[0].call(null, [value, dependency ? JSON.stringify(dependency) : false])
       }
       key = this.buildKey(key)
       result[key] = value
@@ -166,6 +179,10 @@ class Cache {
       this.Logger.warning(`Failed to set value for key ${JSON.stringify(key)}`)
     }
     return value
+  }
+
+  async close () {
+    throw RuntimeException.invoke('Not implemented')
   }
 
   async _getValue (key) {

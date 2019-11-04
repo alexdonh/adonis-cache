@@ -30,6 +30,10 @@ class DbCache extends Cache {
     return this._exists(key)
   }
 
+  async close () {
+    return this.Database.close(this.connection)
+  }
+
   async _exists (key) {
     return await this.Database
       .table(this.cacheTable)

@@ -12,8 +12,8 @@ const sha1 = (str) => {
 class Dependency {
   constructor (config) {
     this.namespace = config.namespace || 'Adonis/Addons/Cache'
-    this.data = null
-    this.reusable = false
+    this.data = config.data
+    this.reusable = config.reusable || false
   }
 
   async evaluateDependency (cache) {
@@ -54,13 +54,13 @@ class Dependency {
     return key
   }
 
-  async generateDependencyData () {
+  async generateDependencyData (cache) {
     throw RuntimeException.invoke('Not implemented')
   }
 
   toJSON () {
     this.__CLASS__ = [this.namespace, this.constructor.name].join('/')
-    return JSON.stringify(this)
+    return Object.assign({}, this)
   }
 }
 
