@@ -1,68 +1,40 @@
-# Adonis RBAC
+# Adonis Cache
 
-Another Role-Based Access Control (RBAC) implementation for [AdonisJs](https://github.com/adonisjs/adonis-framework)
+Another cache provider for [AdonisJs](https://github.com/adonisjs/adonis-framework). It supports Object, File, Db and Redis data store. It also supports cache dependencides.
 
 ## Installation
 
 ```bash
-$ adonis install git+https://github.com/alexdonh/adonis-rbac.git --as=adonis-rbac
+$ adonis install git+https://github.com/alexdonh/adonis-cache.git --as=adonis-cache
 ```
+
+Install optional dependencies to use. For example, install
+
+```bash
+$ npm i fs-extra microtime moment proper-lockfile
+```
+
+to use file store caching.
 
 ## Setup
 
-1. Register RBAC providers in `start/app.js` file.
+1. Register cache providers in `start/app.js` file.
 
 ```js
 const providers = [
   ...
   '@adonisjs/lucid/providers/LucidProvider',
-  'adonis-rbac/providers/RbacProvider'
+  'adonis-cache/providers/CacheProvider'
 ]
 
 const aceProviders = [
   ...
   '@adonisjs/lucid/providers/MigrationsProvider',
-  'adonis-rbac/providers/CommandsProvider'
+  'adonis-cache/providers/CommandsProvider'
 ]
 ```
 
-2. Setting up trait in `/app/Models/User.js` model.
-
-```js
-class User extends Model {
-
-  static get traits() {
-    return [
-      '@provider:Rbac/Traits/User'
-    ]
-  }
-
-  // or if you need to customize the properties
-
-  static boot () {
-    super.boot()
-
-    this.addTrait('@provider:Rbac/Traits/User', {
-      cache: false, // or cache component. See https://github.com/alexdonh/adonis-cache.git
-      cacheKeyPrefix: 'rbac/user/',
-      cacheDuration: 60 * 24,
-      allowActions: []
-    })
-  }
-}
-```
-
-3. Setting up middleware in `start/kernel.js` file.
-
-```js
-const namedMiddleware = {
-  ...
-  rbac: 'Rbac/Middlewares/AccessControl'
-  ...
-}
-```
-
-4. Run the migrations. See [https://adonisjs.com/docs/4.1/migrations](https://adonisjs.com/docs/4.1/migrations)
+4. Run the migrations if using db store cache. See [https://adonisjs.com/docs/4.1/migrations](https://adonisjs.com/docs/4.1/migrations)
 
 ```bash
 $ adonis migration:run
@@ -70,33 +42,35 @@ $ adonis migration:run
 
 ## Usage
 
-1. In `start/routes.js`:
-
 ```js
-Route.get('/path/to/action', 'SomeController.someAction').middleware(['auth'])
+const Cache = use('Adonis/Addons/Cache') // or alias: use('Cache')
 
-// or
+// set cache
+await Cache.set('key', 'This is a value', 60 * 60 * 24) // 24 hours
 
-Route
-  .group(() => {
-    ...
-  })
-  .middleware(['auth'])
+// get cache
+await Cache.get('key')
+
+// add cache, error if key exists
+await Cache.add('key', something)
+
+// check if cache exists
+await Cache.exists('key')
+
+// delete cache
+await Cache.delete('key')
+
+// flush all caches
+await Cache.flush()
+
+// use another cache store 'key', 'db', 'object', 'redis', or your own custom store
+await Cache.store('file').get('key')
+
 ```
 
-2. In controller actions:
+## Register a custom cache store
 
-```js
-if (auth.user.is('administrator')) {
-  ...
-}
-
-// or
-
-if (auth.user.can('/path/to/action')) {
-  ...
-}
-```
+Updating...
 
 ## Credits
 
@@ -104,7 +78,7 @@ if (auth.user.can('/path/to/action')) {
 
 ## Support
 
-Having trouble? [Open an issue](https://github.com/alexdonh/adonis-rbac/issues/new)!
+Having trouble? [Open an issue](https://github.com/alexdonh/adonis-cache/issues/new)!
 
 ## License
 
