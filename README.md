@@ -1,6 +1,6 @@
 # Adonis Cache
 
-Another cache provider for [AdonisJs](https://github.com/adonisjs/adonis-framework). It supports Object, File, Db and Redis data store. It also supports cache dependencides.
+Another cache provider for [AdonisJs](https://github.com/adonisjs/adonis-framework). Supports Object, File, Db and Redis data store. It also supports cache dependencies.
 
 ## Installation
 
