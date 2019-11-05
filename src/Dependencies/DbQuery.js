@@ -17,17 +17,16 @@ class DbDependency extends Dependency {
 
   configure (config) {
     this.connection = config.connection || 'sqlite'
+    this.query = config.query || false
     this.Database.connection(this.connection)
-    this.params = config.params || []
-    this.sql = config.sql || ''
     return super.configure(config)
   }
 
   async _generateDependencyData (cache) {
-    if (!this.sql) {
-      throw RuntimeException.invoke('Sql must be set')
+    if (!this.query) {
+      throw RuntimeException.invoke('Query function must be set')
     }
-    return this.Database.raw(this.sql, this.params)
+    return this.query.call(null, this.Database)
   }
 }
 
