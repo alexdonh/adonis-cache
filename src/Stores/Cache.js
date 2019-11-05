@@ -46,11 +46,11 @@ class Cache {
     return value !== false
   }
 
-  async get (key) {
+  async get (key, defaultValue = undefined) {
     key = this.buildKey(key)
     let value = await this._getValue(key)
     if (value === false || this.serializer === false) {
-      return value
+      return defaultValue || value
     }
     value = this.serializer[1].call(null, value)
     if (_.isArray(value) && value.length === 2) {
@@ -60,10 +60,10 @@ class Cache {
         return data
       }
     }
-    return false
+    return defaultValue || false
   }
 
-  async multiGet (keys) {
+  async multiGet (keys, defaultValue = undefined) {
     const keyMap = _.reduce(keys, (keyMap, key) => {
       keys[key] = this.buildKey(key)
       return keys
@@ -72,12 +72,12 @@ class Cache {
     const result = {}
     for (const key of keys) {
       if (!_.has(values, keyMap[key])) {
-        result[key] = false
+        result[key] = defaultValue || false
         continue
       }
       let value = values[keyMap[key]]
       if (value === false || this.serializer === false) {
-        result[key] = value
+        result[key] = defaultValue || value
         continue
       }
       value = this.serializer[1].call(null, value)
