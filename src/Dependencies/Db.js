@@ -27,7 +27,7 @@ class DbDependency extends Dependency {
     if (!this.sql) {
       throw RuntimeException.invoke('Sql must be set')
     }
-    return this.Database.raw(this.sql, this.params)
+    return this.Database.raw(this.sql, this.params).then(result => JSON.stringify(result.rows))
   }
 
   toJSON () {
