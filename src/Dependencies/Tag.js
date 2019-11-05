@@ -5,9 +5,9 @@ const microtime = require('microtime')
 const Dependency = require('./Dependency')
 
 class TagDependency extends Dependency {
-  constructor (config) {
-    super(config)
+  configure (config) {
     this.tags = config.tags || []
+    return super.configure(config)
   }
 
   async generateDependencyData (cache) {

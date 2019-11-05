@@ -10,10 +10,11 @@ const sha1 = (str) => {
 }
 
 class Dependency {
-  constructor (config) {
+  configure (config) {
     this.namespace = config.namespace || 'Adonis/Addons/Cache'
     this.data = config.data
     this.reusable = config.reusable || false
+    return this
   }
 
   async evaluateDependency (cache) {
@@ -72,8 +73,11 @@ Dependency.fromJSON = (json) => {
     if (!obj.__CLASS__) {
       return false
     }
-    const Cls = ioc.make(obj.__CLASS__)
-    return Object.create(Cls.prototype, Object.getOwnPropertyDescriptors(obj))
+    const instance = ioc.make(obj.__CLASS__)
+    if (instance.configure) {
+      instance.configure(_.omit(obj, '__CLASS__'))
+      return instance
+    }
   } catch (err) {
     return false
   }

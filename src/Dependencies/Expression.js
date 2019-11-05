@@ -4,10 +4,10 @@ const safeeval = require('safe-eval')
 const Dependency = require('./Dependency')
 
 class ExpressionDependency extends Dependency {
-  constructor (config) {
-    super(config)
+  configure (config) {
     this.expression = config.expression || 'true'
     this.params = config.params || {}
+    return super.configure(config)
   }
 
   async _generateDependencyData (cache) {

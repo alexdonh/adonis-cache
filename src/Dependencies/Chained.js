@@ -3,10 +3,10 @@
 const Dependency = require('./Dependency')
 
 class ChainedDependency extends Dependency {
-  constructor (config) {
-    super(config)
+  configure (config) {
     this.dependencies = config.dependencies || []
     this.dependOnAll = config.dependOnAll || true
+    return super.configure(config)
   }
 
   async evaluateDependency (cache) {

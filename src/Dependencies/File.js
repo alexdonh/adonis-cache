@@ -5,9 +5,9 @@ const { RuntimeException } = require('@adonisjs/generic-exceptions')
 const Dependency = require('./Dependency')
 
 class FileDependency extends Dependency {
-  constructor (config) {
-    super(config)
+  configure (config) {
     this.fileName = config.fileName || false
+    return super.configure(config)
   }
 
   async _generateDependencyData (cache) {
