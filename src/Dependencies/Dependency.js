@@ -69,7 +69,7 @@ Dependency._reusableData = {}
 
 Dependency.fromJSON = (json) => {
   try {
-    const obj = JSON.parse(json)
+    const obj = _.isString(json) ? JSON.parse(json) : json
     if (!obj.__CLASS__) {
       return false
     }

@@ -1,10 +1,19 @@
 'use strict'
 
+const _ = require('lodash')
 const Dependency = require('./Dependency')
 
 class ChainedDependency extends Dependency {
   configure (config) {
-    this.dependencies = config.dependencies || []
+    this.dependencies = []
+    if (config.dependencies.length) {
+      this.dependencies = _.map(config.dependencies, obj => {
+        if (_.isPlainObject(obj)) {
+          return Dependency.fromJSON(obj)
+        }
+        return obj
+      })
+    }
     this.dependOnAll = config.dependOnAll || true
     return super.configure(config)
   }
