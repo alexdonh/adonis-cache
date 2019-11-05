@@ -5,7 +5,7 @@ const { ServiceProvider } = require('@adonisjs/fold')
 class CacheProvider extends ServiceProvider {
   register () {
     const namespace = 'Adonis/Addons/Cache'
-    const builtInDependencies = ['Chained', 'Db', 'Dummy', 'Expression', 'File', 'Tag']
+    const builtInDependencies = ['Chained', 'Db', 'DbQuery', 'Dummy', 'Expression', 'File', 'Tag']
 
     for (const dep of builtInDependencies) {
       this.app.singleton(`${namespace}/${dep}Dependency`, () => {
