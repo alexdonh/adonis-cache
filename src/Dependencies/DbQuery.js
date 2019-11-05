@@ -3,7 +3,7 @@
 const { RuntimeException } = require('@adonisjs/generic-exceptions')
 const Dependency = require('./Dependency')
 
-class DbDependency extends Dependency {
+class DbQueryDependency extends Dependency {
   static get inject () {
     return [
       'Adonis/Src/Database'
@@ -38,4 +38,4 @@ class DbDependency extends Dependency {
   }
 }
 
-module.exports = DbDependency
+module.exports = DbQueryDependency
