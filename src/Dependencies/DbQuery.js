@@ -28,6 +28,14 @@ class DbDependency extends Dependency {
     }
     return this.query.call(null, this.Database)
   }
+
+  toJSON () {
+    const db = this.Database
+    delete this.Database
+    const json = super.toJSON()
+    this.Database = db
+    return json
+  }
 }
 
 module.exports = DbDependency

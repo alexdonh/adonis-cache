@@ -29,6 +29,14 @@ class DbDependency extends Dependency {
     }
     return this.Database.raw(this.sql, this.params)
   }
+
+  toJSON () {
+    const db = this.Database
+    delete this.Database
+    const json = super.toJSON()
+    this.Database = db
+    return json
+  }
 }
 
 module.exports = DbDependency
