@@ -8,8 +8,8 @@ class CacheProvider extends ServiceProvider {
     const builtInDependencies = ['Chained', 'Db', 'DbQuery', 'Dummy', 'Expression', 'File', 'Tag']
 
     for (const dep of builtInDependencies) {
-      this.app.singleton(`${namespace}/${dep}Dependency`, () => {
-        return require(`../src/Dependencies/${dep}`)
+      this.app.bind(`${namespace}/${dep}Dependency`, () => {
+        return this.app.make(require(`../src/Dependencies/${dep}`))
       })
       this.app.alias(`${namespace}/${dep}Dependency`, `Cache/${dep}Dependency`)
     }
