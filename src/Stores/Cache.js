@@ -181,6 +181,65 @@ class Cache {
     return value
   }
 
+  /*
+   * Make it compatible with https://github.com/helnokaly/adonis-cache
+   */
+  has (key) {
+    return this.exists(key)
+  }
+
+  many (keys, defaultValue = undefined) {
+    return this.multiGet(keys, defaultValue)
+  }
+
+  put (key, value, duration = undefined, dependency = undefined) {
+    return this.set(key, value, duration, dependency)
+  }
+
+  putMany (items, duration = undefined, dependency = undefined) {
+    return this.multiSet(items, duration, dependency)
+  }
+
+  remember (key, duration, closure, dependency = undefined) {
+    return this.getOrSet(key, closure, duration, dependency)
+  }
+
+  async pull (key, defaultValue = undefined) {
+    const value = await this.get(key, defaultValue)
+    try {
+      await this.delete(key)
+    } catch (err) {}
+    return value
+  }
+
+  forever (key, value, dependency = undefined) {
+    return this.set(key, value, 0, dependency)
+  }
+
+  forget (key) {
+    return this.delete(key)
+  }
+
+  increment (key, amount = 1) {
+    return this._incrementOrDecrement(key, amount, currentValue => currentValue + amount)
+  }
+
+  decrement (key, amount = 1) {
+    return this._incrementOrDecrement(key, amount, currentValue => currentValue - amount)
+  }
+
+  async _incrementOrDecrement (key, amount = 1, closure) {
+    let value = await this.get(key)
+    if (isNaN(value)) {
+      return false
+    }
+    value = closure(value)
+    return await this.set(key, value) ? value : false
+  }
+  /*
+   * --
+   */
+
   close () {
     throw RuntimeException.invoke('Not implemented')
   }
