@@ -21,34 +21,34 @@ class RedisCache extends Cache {
     super.configure(config)
   }
 
-  async exists (key) {
+  exists (key) {
     key = this.buildKey(key)
     return this._exists(key)
   }
 
-  async close () {
+  close () {
     return this.Redis.quit(this.connection)
   }
 
-  async _exists (key) {
+  _exists (key) {
     return this.Redis.exists(key)
   }
 
-  async _getValue (key) {
+  _getValue (key) {
     return this.Redis.get(key)
   }
 
-  async _getValues (keys) {
+  _getValues (keys) {
     return this.Redis.mget(keys).then(result => {
       return _.zipObject(keys, _.map(result, item => item || false))
     })
   }
 
-  async _setValue (key, value, duration) {
+  _setValue (key, value, duration) {
     return (duration === 0 ? this.Redis.set(key, value) : this.Redis.set(key, value, 'EX', duration)).then(result => result === 'OK')
   }
 
-  async _setValues (items, duration) {
+  _setValues (items, duration) {
     const args = _.flatMap(items, (value, key) => {
       return [key, value]
     })

@@ -157,12 +157,12 @@ class Cache {
     return this._addValues(values, duration)
   }
 
-  async delete (key) {
+  delete (key) {
     key = this.buildKey(key)
     return this._deleteValue(key)
   }
 
-  async flush () {
+  flush () {
     return this._flushValues()
   }
 
@@ -181,41 +181,41 @@ class Cache {
     return value
   }
 
-  async close () {
+  close () {
     throw RuntimeException.invoke('Not implemented')
   }
 
-  async _getValue (key) {
+  _getValue (key) {
     throw RuntimeException.invoke('Not implemented')
   }
 
-  async _setValue (key, value, duration) {
+  _setValue (key, value, duration) {
     throw RuntimeException.invoke('Not implemented')
   }
 
-  async _addValue (key, value, duration) {
+  _addValue (key, value, duration) {
     throw RuntimeException.invoke('Not implemented')
   }
 
-  async _deleteValue (key) {
+  _deleteValue (key) {
     throw RuntimeException.invoke('Not implemented')
   }
 
-  async _flushValues () {
+  _flushValues () {
     throw RuntimeException.invoke('Not implemented')
   }
 
-  async _getValues (keys) {
+  _getValues (keys) {
     return Promise.mapSeries(keys, key => this._getValue(key)).then(values => {
       return _.zipObject(keys, values)
     })
   }
 
-  async _setValues (items, duration) {
+  _setValues (items, duration) {
     return Promise.mapSeries(_.keys(items), key => this._setValue(key, items[key], duration).then(result => result === false ? key : true)).then(result => _.filter(result, r => r !== true))
   }
 
-  async _addValues (items, duration) {
+  _addValues (items, duration) {
     return Promise.mapSeries(_.keys(items), key => this._addValue(key, items[key], duration).then(result => result === false ? key : true)).then(result => _.filter(result, r => r !== true))
   }
 }

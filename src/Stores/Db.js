@@ -25,12 +25,12 @@ class DbCache extends Cache {
     super.configure(config)
   }
 
-  async exists (key) {
+  exists (key) {
     key = this.buildKey(key)
     return this._exists(key)
   }
 
-  async close () {
+  close () {
     return this.Database.close(this.connection)
   }
 

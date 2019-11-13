@@ -44,7 +44,7 @@ class FileCache extends Cache {
     return path.join(base, [key, this.cacheFileSuffix].join(''))
   }
 
-  async exists (key) {
+  exists (key) {
     key = this.buildKey(key)
     const cacheFile = this._getCacheFile(key)
     return fs.stat(cacheFile)
@@ -54,7 +54,7 @@ class FileCache extends Cache {
       .catch(() => false)
   }
 
-  async _getValue (key) {
+  _getValue (key) {
     const cacheFile = this._getCacheFile(key)
     return fs.stat(cacheFile)
       .then(stats => {
@@ -116,7 +116,7 @@ class FileCache extends Cache {
       })
   }
 
-  async _addValue (key, value, duration) {
+  _addValue (key, value, duration) {
     const cacheFile = this._getCacheFile(key)
     return fs.stat(cacheFile)
       .then(stats => {
@@ -133,7 +133,7 @@ class FileCache extends Cache {
       })
   }
 
-  async _deleteValue (key) {
+  _deleteValue (key) {
     const cacheFile = this._getCacheFile(key)
     return fs.unlink(cacheFile).then(() => true).catch(() => false)
   }

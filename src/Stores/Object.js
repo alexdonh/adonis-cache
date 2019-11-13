@@ -10,13 +10,13 @@ class ObjectCache extends Cache {
     this._cache = {}
   }
 
-  async _exists (key) {
-    return _.has(this._cache, key) && (this._cache[key][1] === 0 || this._cache[key][1] > microtime.nowDouble())
-  }
-
-  async exists (key) {
+  exists (key) {
     key = this.buildKey(key)
     return this._exists(key)
+  }
+
+  _exists (key) {
+    return _.has(this._cache, key) && (this._cache[key][1] === 0 || this._cache[key][1] > microtime.nowDouble())
   }
 
   async _getValue (key) {
@@ -26,7 +26,7 @@ class ObjectCache extends Cache {
     return false
   }
 
-  async _setValue (key, value, duration) {
+  _setValue (key, value, duration) {
     this._cache[key] = [value, duration === 0 ? 0 : microtime.nowDouble() + duration]
     return true
   }
@@ -39,12 +39,12 @@ class ObjectCache extends Cache {
     return true
   }
 
-  async _deleteValue (key) {
+  _deleteValue (key) {
     delete this._cache[key]
     return true
   }
 
-  async _flushValues () {
+  _flushValues () {
     this._cache = {}
     return true
   }
